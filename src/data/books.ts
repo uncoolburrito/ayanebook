@@ -10,6 +10,7 @@ export interface Book {
   title: string;
   author: string;
   coverUrl: string;
+  headerImage: string;
   description: string;
   chapters: Chapter[];
 }
@@ -53,11 +54,31 @@ const generateChapters = (count: number): Chapter[] => {
   }));
 };
 
-export const books: Book[] = TITLES.map((title, index) => ({
-  id: title.toLowerCase().replace(/ /g, "-"),
-  title,
-  author: AUTHORS[index],
-  coverUrl: COVERS[index % COVERS.length], // Cycle through available covers
-  description: "A classic work of philosophy that explores the fundamental nature of knowledge, reality, and existence.",
-  chapters: generateChapters(Math.floor(Math.random() * 10) + 15) // 15-25 chapters
-}));
+export const books: Book[] = TITLES.map((title, index) => {
+  let headerImage = "/images/greek.png"; // Default
+  let coverUrl = "/images/greek_cover.png"; // Default
+
+  if (["The Republic", "Nicomachean Ethics", "The Symposium"].includes(title)) {
+    headerImage = "/images/greek.png";
+    coverUrl = "/images/greek_cover.png";
+  } else if (["Meditations", "Letters from a Stoic", "Confessions"].includes(title)) {
+    headerImage = "/images/roman.png";
+    coverUrl = "/images/roman_cover.png";
+  } else if (["Tao Te Ching", "The Art of War"].includes(title)) {
+    headerImage = "/images/eastern.png";
+    coverUrl = "/images/greek_cover.png"; // Fallback due to rate limit
+  } else {
+    headerImage = "/images/modern.png";
+    coverUrl = "/images/roman_cover.png"; // Fallback due to rate limit
+  }
+
+  return {
+    id: title.toLowerCase().replace(/ /g, "-"),
+    title,
+    author: AUTHORS[index],
+    coverUrl,
+    headerImage,
+    description: "A classic work of philosophy that explores the fundamental nature of knowledge, reality, and existence.",
+    chapters: generateChapters(Math.floor(Math.random() * 10) + 15)
+  };
+});

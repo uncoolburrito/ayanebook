@@ -18,16 +18,16 @@ export function LibraryView({ books }: LibraryViewProps) {
     );
 
     return (
-        <div className="space-y-12">
+        <div className="space-y-8">
             {/* Search Bar */}
-            <div className="relative max-w-md mx-auto">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Search className="h-5 w-5 text-muted-foreground" />
+            <div className="relative max-w-xl mx-auto">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <Search className="h-4 w-4 text-muted-foreground" />
                 </div>
                 <input
                     type="text"
-                    className="block w-full pl-10 pr-3 py-3 border border-input rounded-full leading-5 bg-background placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm transition-shadow shadow-sm"
-                    placeholder="Search title or author..."
+                    className="block w-full pl-10 pr-4 py-3 rounded-xl bg-secondary border-none text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                    placeholder="Search Library"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -35,7 +35,7 @@ export function LibraryView({ books }: LibraryViewProps) {
 
             {/* Book Grid */}
             {filteredBooks.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-10">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-6 gap-y-10">
                     {filteredBooks.map((book, index) => (
                         <BookCard key={book.id} book={book} index={index} />
                     ))}

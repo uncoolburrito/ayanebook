@@ -3,68 +3,67 @@
 @variant dark (&:where(.dark, .dark *));
 
 :root {
-  /* Light Mode: Stark White & Deep Black */
-  --background: #ffffff;
-  --foreground: #0a0a0a;
+  /* Apple-like Light Mode */
+  --background: #ffffff; /* pure white */
+  --foreground: #1d1d1f; /* SF text color */
 
   --card: #ffffff;
-  --card-foreground: #0a0a0a;
+  --card-foreground: #1d1d1f;
 
   --popover: #ffffff;
-  --popover-foreground: #0a0a0a;
+  --popover-foreground: #1d1d1f;
 
-  --primary: #0a0a0a;
+  --primary: #0071e3; /* Apple Blue */
   --primary-foreground: #ffffff;
 
-  --secondary: #f4f4f5;
-  --secondary-foreground: #18181b;
+  --secondary: #f5f5f7; /* Apple light gray background */
+  --secondary-foreground: #1d1d1f;
 
-  --muted: #f4f4f5;
-  --muted-foreground: #71717a;
+  --muted: #f5f5f7;
+  --muted-foreground: #86868b; /* Apple gray text */
 
-  --accent: #f4f4f5;
-  --accent-foreground: #18181b;
+  --accent: #f5f5f7;
+  --accent-foreground: #1d1d1f;
 
-  --destructive: #ef4444;
-  --destructive-foreground: #fafafa;
+  --destructive: #ff3b30; /* Apple Red */
+  --destructive-foreground: #ffffff;
 
-  --border: #e4e4e7;
-  --input: #e4e4e7;
-  --ring: #0a0a0a;
+  --border: #d2d2d7;
+  --input: #d2d2d7;
+  --ring: #0071e3;
 
-  --radius: 0rem;
-  /* Brutalist: No rounded corners */
+  --radius: 0.75rem; /* Soft rounded corners */
 }
 
 .dark {
-  /* Dark Mode: Deep Black & Stark White */
-  --background: #0a0a0a;
-  --foreground: #fafafa;
+  /* Apple-like Dark Mode */
+  --background: #000000;
+  --foreground: #f5f5f7;
 
-  --card: #0a0a0a;
-  --card-foreground: #fafafa;
+  --card: #1c1c1e;
+  --card-foreground: #f5f5f7;
 
-  --popover: #0a0a0a;
-  --popover-foreground: #fafafa;
+  --popover: #1c1c1e;
+  --popover-foreground: #f5f5f7;
 
-  --primary: #fafafa;
-  --primary-foreground: #0a0a0a;
+  --primary: #0a84ff; /* Apple Dark Mode Blue */
+  --primary-foreground: #ffffff;
 
-  --secondary: #27272a;
-  --secondary-foreground: #fafafa;
+  --secondary: #1c1c1e;
+  --secondary-foreground: #f5f5f7;
 
-  --muted: #27272a;
-  --muted-foreground: #a1a1aa;
+  --muted: #1c1c1e;
+  --muted-foreground: #86868b;
 
-  --accent: #27272a;
-  --accent-foreground: #fafafa;
+  --accent: #1c1c1e;
+  --accent-foreground: #f5f5f7;
 
-  --destructive: #7f1d1d;
-  --destructive-foreground: #fafafa;
+  --destructive: #ff453a; /* Apple Dark Mode Red */
+  --destructive-foreground: #ffffff;
 
-  --border: #27272a;
-  --input: #27272a;
-  --ring: #d4d4d8;
+  --border: #38383a;
+  --input: #38383a;
+  --ring: #0a84ff;
 }
 
 @theme inline {
@@ -93,18 +92,19 @@
   --font-mono: var(--font-geist-mono);
 
   --radius-none: 0px;
-  --radius-sm: 0px;
-  --radius-md: 0px;
-  --radius-lg: 0px;
-  --radius-xl: 0px;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
-  letter-spacing: -0.02em;
-  /* Tight modern tracking */
+  letter-spacing: -0.01em; /* SF Pro style tight tracking */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1,
@@ -113,29 +113,36 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-serif);
-  font-weight: 400;
-  /* Editorial elegance */
-  letter-spacing: -0.03em;
+  font-family: var(--font-sans); /* Apple uses sans-serif for headings mostly now */
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
-/* Utility for "Museum Label" style */
-.museum-label {
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--muted-foreground);
+/* Glassmorphism Utilities */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-/* Drop Cap Style */
-.drop-cap>p:first-of-type::first-letter {
-  float: left;
-  font-family: var(--font-serif);
-  font-size: 4.5rem;
-  line-height: 0.8;
-  font-weight: 400;
-  margin-right: 0.75rem;
-  margin-top: 0.25rem;
-  color: var(--primary);
+.dark .glass {
+  background: rgba(28, 28, 30, 0.7);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Smooth Transitions */
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Hide scrollbar but keep functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

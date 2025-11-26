@@ -18,21 +18,21 @@ export function BookCard({ book, index }: BookCardProps) {
             transition={{ duration: 0.4, delay: index * 0.1 }}
         >
             <Link href={`/read/${book.id}/${book.chapters[0].id}`} className="group block h-full">
-                <div className="relative aspect-[2/3] overflow-hidden border border-transparent group-hover:border-primary transition-colors duration-300">
+                <div className="relative aspect-[2/3] overflow-hidden rounded-xl shadow-sm group-hover:shadow-xl transition-all duration-300 ease-out">
                     <Image
                         src={book.coverUrl}
                         alt={book.title}
                         fill
-                        className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-out group-hover:scale-105"
+                        className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
-
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300" />
                 </div>
-                <div className="mt-4 space-y-2 border-l-2 border-transparent pl-3 group-hover:border-primary transition-all duration-300">
-                    <h3 className="font-serif text-2xl font-medium leading-none group-hover:translate-x-1 transition-transform duration-300">
+                <div className="mt-3 space-y-1">
+                    <h3 className="font-semibold text-sm md:text-base leading-tight text-foreground group-hover:text-primary transition-colors">
                         {book.title}
                     </h3>
-                    <p className="museum-label text-xs text-muted-foreground">{book.author}</p>
+                    <p className="text-xs text-muted-foreground">{book.author}</p>
                 </div>
             </Link>
         </motion.div>

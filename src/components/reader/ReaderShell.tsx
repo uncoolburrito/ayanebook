@@ -2,7 +2,8 @@
 
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import { motion, useScroll, useSpring, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import { motion, useScroll, useSpring, useTransform, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Home, Menu, X, BookOpen } from "lucide-react";
 import { Book, Chapter } from "@/data/books";
 import { useTheme } from "next-themes";
@@ -21,6 +22,9 @@ export function ReaderShell({ book, chapter, nextChapter, prevChapter }: ReaderS
         damping: 30,
         restDelta: 0.001
     });
+
+    const headerY = useTransform(scrollYProgress, [0, 0.2], [0, -50]);
+    const headerOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { theme, setTheme } = useTheme();
@@ -51,33 +55,37 @@ export function ReaderShell({ book, chapter, nextChapter, prevChapter }: ReaderS
 
     const variants = {
         enter: (direction: number) => ({
-            x: direction > 0 ? 50 : -50,
+            x: direction > 0 ? 20 : -20,
             opacity: 0,
-            rotateY: direction > 0 ? 5 : -5,
         }),
         center: {
             zIndex: 1,
             x: 0,
             opacity: 1,
-            rotateY: 0,
         },
         exit: (direction: number) => ({
             zIndex: 0,
-            x: direction < 0 ? 50 : -50,
+            x: direction < 0 ? 20 : -20,
             opacity: 0,
-            rotateY: direction < 0 ? 5 : -5,
         })
     };
 
     return (
         <div className="min-h-screen bg-background text-foreground transition-colors duration-500 relative overflow-x-hidden">
-            {/* Grain Overlay */}
-            <div
-                className="pointer-events-none fixed inset-0 z-50 opacity-[0.07] mix-blend-overlay"
-                style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
-                }}
-            />
+            {/* Header Image Parallax */}
+            <motion.div
+                className="fixed top-0 left-0 right-0 h-[40vh] z-0 overflow-hidden"
+                style={{ y: headerY, opacity: headerOpacity }}
+            >
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background z-10" />
+                <Image
+                    src={book.headerImage || "/images/greek.png"}
+                    alt="Chapter Header"
+                    fill
+                    className="object-cover"
+                    priority
+                />
+            </motion.div>
 
             {/* Reading Progress Bar */}
             <motion.div
@@ -86,16 +94,16 @@ export function ReaderShell({ book, chapter, nextChapter, prevChapter }: ReaderS
             />
 
             {/* Navigation Bar */}
-            <nav className="fixed top-0 left-0 right-0 h-16 bg-background/80 backdrop-blur-md border-b border-border/40 z-40 flex items-center justify-between px-4 md:px-8 transition-all duration-300">
+            <nav className="fixed top-0 left-0 right-0 h-14 bg-background/80 backdrop-blur-md border-b border-border/40 z-40 flex items-center justify-between px-4 md:px-8 transition-all duration-300">
                 <div className="flex items-center gap-4">
-                    <Link href="/" className="p-2 hover:bg-accent rounded-full transition-colors group">
+                    <Link href="/" className="p-2 hover:bg-secondary rounded-full transition-colors group">
                         <Home className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors" />
                     </Link>
                     <div className="flex flex-col">
-                        <span className="font-serif font-medium text-sm md:text-base leading-none">
+                        <span className="font-semibold text-sm md:text-base leading-none tracking-tight">
                             {book.title}
                         </span>
-                        <span className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-widest mt-1">
+                        <span className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-widest mt-0.5">
                             Chapter {currentChapterIndex + 1} of {totalChapters}
                         </span>
                     </div>
@@ -104,13 +112,13 @@ export function ReaderShell({ book, chapter, nextChapter, prevChapter }: ReaderS
                 <div className="flex items-center gap-2">
                     <button
                         onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                        className="p-2 hover:bg-accent rounded-full transition-colors text-xs font-medium tracking-wider uppercase"
+                        className="p-2 hover:bg-secondary rounded-full transition-colors text-xs font-medium tracking-wider uppercase"
                     >
                         {theme === "dark" ? "Light" : "Dark"}
                     </button>
                     <button
                         onClick={() => setIsMenuOpen(true)}
-                        className="p-2 hover:bg-accent rounded-full transition-colors group"
+                        className="p-2 hover:bg-secondary rounded-full transition-colors group"
                     >
                         <Menu className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors" />
                     </button>
@@ -135,13 +143,13 @@ export function ReaderShell({ book, chapter, nextChapter, prevChapter }: ReaderS
                             transition={{ type: "spring", damping: 25, stiffness: 200 }}
                             className="fixed right-0 top-0 bottom-0 w-80 bg-background border-l border-border z-50 shadow-2xl flex flex-col"
                         >
-                            <div className="p-6 border-b border-border flex justify-between items-center bg-muted/30">
-                                <h2 className="font-serif text-xl font-bold">Contents</h2>
-                                <button onClick={() => setIsMenuOpen(false)} className="p-2 hover:bg-accent rounded-full transition-colors">
+                            <div className="p-6 border-b border-border flex justify-between items-center bg-secondary/30">
+                                <h2 className="font-semibold text-lg">Contents</h2>
+                                <button onClick={() => setIsMenuOpen(false)} className="p-2 hover:bg-secondary rounded-full transition-colors">
                                     <X className="w-5 h-5" />
                                 </button>
                             </div>
-                            <div className="flex-1 overflow-y-auto p-4 space-y-2">
+                            <div className="flex-1 overflow-y-auto p-4 space-y-1">
                                 {book.chapters.map((c, idx) => (
                                     <Link
                                         key={c.id}
@@ -149,7 +157,7 @@ export function ReaderShell({ book, chapter, nextChapter, prevChapter }: ReaderS
                                         onClick={() => setIsMenuOpen(false)}
                                         className={`flex items-center gap-3 p-3 rounded-lg transition-all ${c.id === chapter.id
                                             ? "bg-primary/10 text-primary font-medium"
-                                            : "hover:bg-accent text-muted-foreground hover:text-foreground"
+                                            : "hover:bg-secondary text-muted-foreground hover:text-foreground"
                                             }`}
                                     >
                                         <span className="text-xs font-mono opacity-50 w-6">{idx + 1}.</span>
@@ -157,25 +165,13 @@ export function ReaderShell({ book, chapter, nextChapter, prevChapter }: ReaderS
                                     </Link>
                                 ))}
                             </div>
-                            <div className="p-4 border-t border-border bg-muted/30">
-                                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                                    <span>{progressPercentage}% Complete</span>
-                                    <span>{currentChapterIndex + 1}/{totalChapters}</span>
-                                </div>
-                                <div className="h-1 bg-border mt-2 rounded-full overflow-hidden">
-                                    <div
-                                        className="h-full bg-primary transition-all duration-500"
-                                        style={{ width: `${progressPercentage}%` }}
-                                    />
-                                </div>
-                            </div>
                         </motion.div>
                     </>
                 )}
             </AnimatePresence>
 
             {/* Content Area */}
-            <main className="container mx-auto max-w-3xl px-4 pt-28 pb-40 relative z-10 perspective-1000">
+            <main className="container mx-auto max-w-2xl px-6 pt-[35vh] pb-40 relative z-10">
                 <AnimatePresence mode="wait" custom={direction}>
                     <motion.div
                         key={chapter.id}
@@ -186,32 +182,28 @@ export function ReaderShell({ book, chapter, nextChapter, prevChapter }: ReaderS
                         exit="exit"
                         transition={{
                             x: { type: "spring", stiffness: 300, damping: 30 },
-                            opacity: { duration: 0.2 },
-                            rotateY: { duration: 0.4 }
+                            opacity: { duration: 0.2 }
                         }}
-                        className="bg-card text-card-foreground p-8 md:p-16 shadow-2xl rounded-sm min-h-[60vh] border border-border/50 relative overflow-hidden"
+                        className="bg-card text-card-foreground p-8 md:p-12 shadow-xl rounded-2xl border border-border/50 relative overflow-hidden backdrop-blur-sm bg-opacity-95"
                     >
-                        {/* Decorative page elements */}
-                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/20 to-transparent opacity-50" />
-
-                        <div className="prose prose-lg md:prose-xl dark:prose-invert prose-serif mx-auto">
-                            <div className="flex flex-col items-center mb-12">
-                                <span className="text-xs font-bold tracking-[0.2em] text-muted-foreground uppercase mb-4">
+                        <div className="prose prose-lg dark:prose-invert prose-slate mx-auto">
+                            <div className="flex flex-col items-center mb-10">
+                                <span className="text-xs font-bold tracking-[0.2em] text-muted-foreground uppercase mb-3">
                                     Chapter {currentChapterIndex + 1}
                                 </span>
-                                <h1 className="font-serif text-4xl md:text-5xl text-center !mb-0 !mt-0">
+                                <h1 className="font-serif text-3xl md:text-4xl text-center !mb-0 !mt-0 tracking-tight">
                                     {chapter.title}
                                 </h1>
-                                <div className="w-12 h-1 bg-primary/20 mt-8 rounded-full" />
+                                <div className="w-8 h-1 bg-primary/20 mt-6 rounded-full" />
                             </div>
 
                             <div
                                 dangerouslySetInnerHTML={{ __html: chapter.content }}
-                                className="drop-cap"
+                                className="drop-cap leading-relaxed"
                             />
 
-                            <div className="mt-16 pt-8 border-t border-border/30 flex justify-center">
-                                <BookOpen className="w-6 h-6 text-muted-foreground/30" />
+                            <div className="mt-12 pt-8 border-t border-border/30 flex justify-center">
+                                <BookOpen className="w-5 h-5 text-muted-foreground/30" />
                             </div>
                         </div>
                     </motion.div>
@@ -224,14 +216,14 @@ export function ReaderShell({ book, chapter, nextChapter, prevChapter }: ReaderS
                     {prevChapter ? (
                         <Link
                             href={`/read/${book.id}/${prevChapter.id}`}
-                            className="group flex items-center gap-3 pl-2 pr-4 py-2 rounded-full hover:bg-accent transition-all"
+                            className="group flex items-center gap-3 pl-2 pr-4 py-2 rounded-full hover:bg-secondary transition-all"
                         >
                             <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                                 <ChevronLeft className="w-4 h-4" />
                             </div>
                             <div className="flex flex-col items-start">
                                 <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Previous</span>
-                                <span className="text-sm font-serif font-medium max-w-[120px] truncate">{prevChapter.title}</span>
+                                <span className="text-sm font-medium max-w-[120px] truncate">{prevChapter.title}</span>
                             </div>
                         </Link>
                     ) : (
@@ -239,7 +231,7 @@ export function ReaderShell({ book, chapter, nextChapter, prevChapter }: ReaderS
                     )}
 
                     <div className="hidden md:flex flex-col items-center">
-                        <span className="font-serif italic text-muted-foreground text-sm">
+                        <span className="font-medium text-muted-foreground text-sm">
                             {book.title}
                         </span>
                     </div>
@@ -247,11 +239,11 @@ export function ReaderShell({ book, chapter, nextChapter, prevChapter }: ReaderS
                     {nextChapter ? (
                         <Link
                             href={`/read/${book.id}/${nextChapter.id}`}
-                            className="group flex items-center gap-3 pl-4 pr-2 py-2 rounded-full hover:bg-accent transition-all"
+                            className="group flex items-center gap-3 pl-4 pr-2 py-2 rounded-full hover:bg-secondary transition-all"
                         >
                             <div className="flex flex-col items-end">
                                 <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Next</span>
-                                <span className="text-sm font-serif font-medium max-w-[120px] truncate">{nextChapter.title}</span>
+                                <span className="text-sm font-medium max-w-[120px] truncate">{nextChapter.title}</span>
                             </div>
                             <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                                 <ChevronRight className="w-4 h-4" />
