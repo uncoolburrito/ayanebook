@@ -55,21 +55,77 @@ const generateChapters = (count: number): Chapter[] => {
 };
 
 export const books: Book[] = TITLES.map((title, index) => {
-  let headerImage = "/images/greek.png"; // Default
-  let coverUrl = "/images/greek_cover.png"; // Default
+  let headerImage = "/images/greek.png";
+  let coverUrl = "/images/greek_cover.png";
 
+  // Header Image Logic
   if (["The Republic", "Nicomachean Ethics", "The Symposium"].includes(title)) {
     headerImage = "/images/greek.png";
-    coverUrl = "/images/greek_cover.png";
   } else if (["Meditations", "Letters from a Stoic", "Confessions"].includes(title)) {
     headerImage = "/images/roman.png";
-    coverUrl = "/images/roman_cover.png";
   } else if (["Tao Te Ching", "The Art of War"].includes(title)) {
     headerImage = "/images/eastern.png";
-    coverUrl = "/images/greek_cover.png"; // Fallback due to rate limit
   } else {
     headerImage = "/images/modern.png";
-    coverUrl = "/images/roman_cover.png"; // Fallback due to rate limit
+  }
+
+  // Unique Cover Logic
+  switch (title) {
+    // Batch 1 & 2 (Previously Generated)
+    case "The Republic":
+      coverUrl = "/images/cover_republic.png";
+      break;
+    case "Meditations":
+      coverUrl = "/images/cover_meditations.png";
+      break;
+    case "Nicomachean Ethics":
+      coverUrl = "/images/cover_ethics.png";
+      break;
+    case "Beyond Good and Evil":
+      coverUrl = "/images/cover_beyond_good_evil.png";
+      break;
+    case "The Symposium":
+      coverUrl = "/images/cover_symposium.png";
+      break;
+    case "Critique of Pure Reason":
+      coverUrl = "/images/cover_critique.png";
+      break;
+    case "The Prince":
+      coverUrl = "/images/cover_prince.png";
+      break;
+
+    // Batch 3 & 4 (Newly Generated)
+    case "Tao Te Ching":
+      coverUrl = "/images/cover_tao_te_ching.png";
+      break;
+    case "Confessions":
+      coverUrl = "/images/cover_confessions.png";
+      break;
+    case "Leviathan":
+      coverUrl = "/images/cover_leviathan.png";
+      break;
+    case "The Social Contract":
+      coverUrl = "/images/cover_social_contract.png";
+      break;
+    case "Being and Time":
+      coverUrl = "/images/cover_being_and_time.png";
+      break;
+    case "Phenomenology of Spirit":
+      coverUrl = "/images/cover_phenomenology_of_spirit.png";
+      break;
+    case "The Art of War":
+      coverUrl = "/images/cover_art_of_war.png";
+      break;
+
+    // Fallbacks (Rate Limit Hit)
+    case "Letters from a Stoic":
+      coverUrl = "/images/cover_meditations.png"; // Closest match (Stoicism)
+      break;
+    case "Thus Spoke Zarathustra":
+      coverUrl = "/images/cover_beyond_good_evil.png"; // Closest match (Nietzsche)
+      break;
+    default:
+      coverUrl = "/images/greek_cover.png";
   }
 
   return {
